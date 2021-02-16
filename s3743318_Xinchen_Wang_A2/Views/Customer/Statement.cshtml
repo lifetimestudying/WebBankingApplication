@@ -1,0 +1,115 @@
+﻿@using Microsoft.AspNetCore.Http
+
+@model StatementViewModel
+
+@{
+    ViewData["Title"] = "Statement";
+}
+
+<h1 class="display-4 font-weight-bold">My Statement</h1>
+
+<form>  
+    <div class="dropdown mt-3 btn-group">
+        <button id="select-account-btn" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown">
+            ---- Select Account ----
+        </button>
+        <ul class="select-account-dropdown dropdown-menu">
+            @foreach (var account in Model.Accounts)
+            {
+                <li><a asp-route-id="@account.AccountNumber" class="dropdown-item"> @account.AccountType -  @account.AccountNumber </a></li>
+            }
+        </ul>
+    </div>
+
+    @if (ViewContext.RouteData.Values["id"] != null)
+    {
+        <div class="account-statement-field">
+            <h3 class="mt-5">Account Statement for account - @ViewContext.RouteData.Values["id"]</h3>
+
+            <table class="table table-hover mt-3 text-center">
+                <thead>
+                    <tr>
+                        <th>
+                            Transaction ID
+                        </th>
+                        <th>
+                            Transaction Type
+                        </th>
+                        <th>
+                            Account Number
+                        </th>
+                        <th>
+                            Destination Account
+                        </th>
+                        <th>
+                            Amount
+                        </th>
+                        <th>
+                            Comment
+                        </th>
+                        <th>
+                            Transaction Time
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                @foreach (var item in Model.Transactions)
+                {
+                    <tbody>
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(x => item.TransactionID)
+                            </td>
+                            <td>
+
+                                @Html.DisplayFor(x => item.TransactionType)
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.AccountNumber)
+
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.DestAccountNumber)
+
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.Amount)
+
+                            </td>
+                            <td>
+                                @Html.DisplayFor(x => item.Comment)
+                            </td>
+                            <td>
+                                @TimeZoneInfo.ConvertTimeFromUtc(item.TransactionTimeUtc.Value, TimeZoneInfo.Local).ToString("dd/MM/yyyy hh:mm:ss tt")
+                            </td>
+                        </tr>
+                    </tbody>
+                }
+            </table>
+            <ul class="pagination">
+                @for (int i = 1; i <= Model.PageCount; i++)
+                {
+                    <li class="@(i == Model.CurrentPageIndex ? "page-item active" : "page-item")">
+                        <a type="submit" class="page-link" href="@Url.Action("Statement", new { page = i })">@i</a>
+                    </li>
+                }
+            </ul>
+        </div>
+    }
+</form>
+
+
+<div class="mt-5">
+    <a asp-action="Index">Back to Accounts</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('select').change(function () {
+                $('a').attr('asp-route-id', $(this).children('option:selected').val());
+            })
+        })
+    </script>
+}

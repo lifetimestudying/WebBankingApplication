@@ -1,0 +1,63 @@
+﻿@model Customer
+@{
+    ViewData["Title"] = "Customer Accounts";
+}
+
+<h1 class="display-4">Welcome, @Model.CustomerName</h1>
+@if (Model.CustomerID == 0000)
+{
+    <div class="col-md-6 mt-3">
+        <h1>Thank you for registering MCBA Internet Banking</h1>
+        <p class="mt-2 text-info">Please be adviced:</p>
+        <p class="mt-2">
+            All account openning requires in branch opeartions.
+            Please visit one of our branches around the universe
+            to open an new account in order to use Online banking system.
+        </p>
+    </div>
+}
+else
+{
+    <div class="row mt-3">
+        <a class="btn btn-outline-secondary btn-sm m-2 col-sm-2" asp-action="ATM">ATM</a>
+        <a class="btn btn-outline-secondary btn-sm m-2 col-sm-2" asp-action="Statement">My Statement</a>
+        <button class="btn btn-outline-secondary btn-sm m-2 dropdown-toggle col-sm-2" data-toggle="dropdown">
+            Bill Payment
+        </button>
+        <ul class="dropdown-menu">
+            <li><a class="dropdown-item" asp-action="SchedualBillPay">Schedual Bill Payment</a></li>
+            <li><a class="dropdown-item" asp-action="ManageBillPay">Manage Bill Payment</a></li>
+        </ul>
+    </div>
+    <h3 class="mt-5">Accounts Detail</h3>
+    <table class="table table-hover text-center">
+        <thead>
+            <tr>
+                <th>Account Number</th>
+                <th>Account Type</th>
+                <th>Current Balance</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var account in Model.Account)
+            {
+                @if (account.AccountStatus == Status.Locked)
+                {
+                    <tr class="alert-warning">
+                        <td>@Html.DisplayFor(x => account.AccountNumber)</td>
+                        <td>@Html.DisplayFor(x => account.AccountType)</td>
+                        <td>@Html.DisplayFor(x => account.Balance)</td>
+                    </tr>
+                }
+                else
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(x => account.AccountNumber)</td>
+                        <td>@Html.DisplayFor(x => account.AccountType)</td>
+                        <td>@Html.DisplayFor(x => account.Balance)</td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+}

@@ -1,0 +1,93 @@
+﻿@model SchedualBillPayViewModel
+
+@{
+    ViewData["Title"] = "SchedualBillPay";
+}
+
+@{ 
+    var currentDateTime = DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd hh:mm:ss tt").Split(" ");
+    var currentDate = currentDateTime[0];
+    var currentTime = currentDateTime[1];
+}
+
+<h1 class="display-4 font-weight-bold">Schedual Bill Payment</h1>
+
+<div class="col-md-4">
+    <form asp-action="SchedualBillPay">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+        <div class="form-group">
+            <div class="mt-2 select-account-field align-items-start">
+                <h5 class="control-label">Account: </h5>
+                <select class="form-control form-control-sm" name="AccountNumber" required>
+                    <option value="">---- Select Account ----</option>
+                    @foreach (var account in Model.Customer.Account)
+                    {
+                        if (account.AccountStatus == Status.Locked)
+                        {
+                            <option value="@account.AccountNumber" disabled>@account.AccountType - @account.AccountNumber</option>
+
+                        }
+                        else
+                        {
+                            <option value="@account.AccountNumber">@account.AccountType - @account.AccountNumber</option>
+                        }
+                    }
+                </select>
+                @Html.ValidationMessage("Account", new { @class = "text-danger" })
+            </div>
+            <div class="mt-2 select-payee-field align-items-start">
+                <h5 class="control-label">Payee: </h5>
+                <select class="form-control form-control-sm" name="PayeeID" required>
+                    <option value="">---- Select Payee ----</option>
+                    @foreach (var payee in Model.Payees)
+                    {
+                        <option value="@payee.PayeeID">@payee.PayeeID - @payee.PayeeName</option>
+                    }
+                </select>
+                @Html.ValidationMessage("Payee", new { @class = "text-danger" })
+            </div>
+            <div class="mt-2 amount-field align-items-start">
+                <h5 class="control-label ">Amount: </h5>
+                <input id="Amount" name="Amount" class="form-control mt-2" value="@ViewBag.Amount?.ToString("0.00")"
+                       data-val="true" data-val-number="The field Amount must be a number."
+                       data-val-required="The Amount field is required." />
+                @Html.ValidationMessage("Amount", new { @class = "text-danger" })
+            </div>
+            <div class="mt-2 schedual-date-field align-items-start">
+                <h5 class="control-label ">Schedualed Date: </h5>
+                <input type="date" value="@DateTime.UtcNow" name="SchedualDate" id="SchedualDate"
+                       min="@currentDate" class="form-control" data-val="true" data-val-required="The Schedualed Date is required." />
+                @Html.ValidationMessage("SchedualDate", new { @class = "text-danger" })
+            </div>
+            <div class="mt-2 schedual-time-field align-items-start">
+                <h5 class="control-label ">Schedualed Time: </h5>
+                <input type="time" value="@DateTime.UtcNow" name="SchedualTime" id="SchedualTime"
+                       class="form-control" data-val="true" data-val-required="The Schedualed Time is required." />
+                @Html.ValidationMessage("SchedualTime", new { @class = "text-danger" })
+            </div>
+            <div class="mt-2 select-period-field align-items-start">
+                <h5 class="control-label">Period: </h5>
+                <select class="form-control form-control-sm" name="Period" required>
+                    <option value="">---- Select Period ----</option>
+                    <option value="@Period.Annually">@Period.Annually</option>
+                    <option value="@Period.Quarterly">@Period.Quarterly</option>
+                    <option value="@Period.Monthly">@Period.Monthly</option>
+                    <option value="@Period.Weekly">@Period.Weekly</option>
+                    <option value="@Period.OnceOff">@Period.OnceOff</option>
+                </select>
+                @Html.ValidationMessage("Period", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            <input type="submit" value="Procced" class="btn btn-primary" />
+        </div>
+    </form>
+</div>
+<div>
+    <a asp-action="Index">Back to Accounts</a>
+</div>
+
+@section Scripts {
+    @{ await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

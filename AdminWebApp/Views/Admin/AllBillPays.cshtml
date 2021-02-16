@@ -1,0 +1,78 @@
+﻿@model AllBillPaysViewModel
+@{
+    ViewData["Title"] = "AllBillPays";
+}
+
+<h1 class="display-4">Bill Pays</h1>
+<input class="form-control mt-5 col-md-2" id="searchBillPay" type="text" placeholder="Search..">
+<table class="table table-hover text-center mt-3" id="table">
+    <thead>
+        <tr>
+            <th>BillPayID</th>
+            <th>Account Number</th>
+            <th>PayeeID</th>
+            <th>Amount</th>
+            <th>Schedual Date</th>
+            <th>Period</th>
+            <th>Modify Date</th>
+            <th>BillPay Status</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var bill in Model.BillPays)
+        {
+
+            <tr>
+                <td>@Html.DisplayFor(x => bill.BillPayID)</td>
+                <td>@Html.DisplayFor(x => bill.AccountNumber)</td>
+                <td>@Html.DisplayFor(x => bill.PayeeID)</td>
+                <td>@Html.DisplayFor(x => bill.Amount)</td>
+                <td class="text-nowrap">@bill.SchedualDate.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                <td>@Html.DisplayFor(x => bill.Period)</td>
+                <td class="text-nowrap">@bill.ModifyDate.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                <td>@Html.DisplayFor(x => bill.BillPayStatus)</td>
+                @if (bill.BillPayStatus == Status.Activate)
+                {
+                    <td>
+                        <a asp-action="LockBillPay" asp-route-id="@bill.BillPayID" class="btn btn-outline-info btn-sm text-nowrap">
+                            Lock Bill Pay
+                        </a>
+                    </td>
+                }
+                else
+                {
+                    <td>
+                        <a asp-action="UnlockBillPay" asp-route-id="@bill.BillPayID" class="btn btn-outline-info btn-sm text-nowrap">
+                            Unlock Bill Pay
+                        </a>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+<ul class="pagination">
+    @for (int i = 1; i <= Model.PageCount; i++)
+    {
+        <li class="@(i == Model.CurrentPageIndex ? "page-item active" : "page-item")">
+            <a type="submit" class="page-link" href="@Url.Action("AllBillPays", new { page = i })">@i</a>
+        </li>
+    }
+</ul>
+<div class="mt-3">
+    <a asp-action="Index">Back to Accounts</a>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $("#searchBillPay").on("keyup", function () {
+                var value = $(this).val().toLowerCase();
+                $("#table tbody tr").filter(function () {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+                });
+            });
+        });
+    </script>
+} 

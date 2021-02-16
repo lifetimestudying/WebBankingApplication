@@ -1,0 +1,58 @@
+﻿@model IEnumerable<Customer>
+@{
+    ViewData["Title"] = "Index";
+}
+
+<div>
+    <h1 class="display-4">Welcome, Admin</h1>
+    <div class="row mt-3">
+        <a class="btn btn-outline-secondary btn-sm m-2 col-sm-2" asp-action="AllAccounts">View All Accounts</a>
+        <a class="btn btn-outline-secondary btn-sm m-2 col-sm-2" asp-action="AllTransactions">View All Transactions</a>
+        <a class="btn btn-outline-secondary btn-sm m-2 col-sm-2" asp-action="AllBillPays">View All BillPays</a>
+    </div>
+    <table class="table table-hover text-center mt-3">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.CustomerID)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.CustomerName)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Phone)
+                </th>
+                <th>@Html.DisplayNameFor(model => model.CustomerStatus)</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var customer in Model)
+            {
+            <tr>
+                <td>@Html.DisplayFor(x => customer.CustomerID)</td>
+                <td>@Html.DisplayFor(x => customer.CustomerName)</td>
+                <td>@Html.DisplayFor(x => customer.Phone)</td>
+                <td>@Html.DisplayFor(x => customer.CustomerStatus)</td>
+                <td>
+                    <a asp-action="CustomerAccounts" asp-route-id="@customer.CustomerID" class="btn btn-outline-info btn-sm text-nowrap mr-3">View Accounts</a>
+                    @if (customer.CustomerStatus == Status.Activate)
+                    {
+                        @*Trigger account edit modal*@
+                        <a asp-action="LockCustomer" asp-route-id="@customer.CustomerID" class="btn btn-outline-info btn-sm text-nowrap">
+                            Lock Customer
+                        </a>
+                    }
+                    else
+                    {
+                        <a asp-action="UnlockCustomer" asp-route-id="@customer.CustomerID" class="btn btn-outline-info btn-sm text-nowrap">
+                            Unlock Customer
+                        </a>
+                    }
+                </td>
+
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>

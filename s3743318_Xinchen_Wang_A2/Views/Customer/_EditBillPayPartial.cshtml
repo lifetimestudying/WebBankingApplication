@@ -1,0 +1,81 @@
+﻿@model BillPay
+
+@{
+    var schedualDateTime = Model.SchedualDate.ToLocalTime().ToString("yyyy-MM-dd hh:mm:ss tt").Split(" ");
+    var schedualDate = schedualDateTime[0];
+    var schedualTime = schedualDateTime[1];
+
+    var currentDateTime = DateTime.UtcNow.ToLocalTime().ToString("yyyy-MM-dd hh:mm:ss tt").Split(" ");
+    var currentDate = currentDateTime[0];
+    var currentTime = currentDateTime[1];
+
+
+    List<Period> periodList = new List<Period>();
+    periodList.Add(Period.Annually);
+    periodList.Add(Period.Quarterly);
+    periodList.Add(Period.Monthly);
+    periodList.Add(Period.Weekly);
+    periodList.Add(Period.OnceOff);
+    periodList.Remove(Model.Period);
+}
+
+<form asp-route-id="@Model.BillPayID">
+    <div class="modal-header">
+        <h5 class="modal-title" id="staticBackdropLabel">Edit Bill Payment - @Model.BillPayID</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    @if (Model.BillPayStatus == Status.Locked)
+    {
+        <div class="modal-body">
+            <p>This bill payment is currently been locked due to suspicions activities</p>
+            <p>Please contact customer service for more detail</p>
+        </div>
+        <div class="modal-footer">
+            <input type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal" value="Ok">
+        </div>
+    }
+    else
+    {
+        <div class="modal-body">
+            <div class="form-group mt-2 text-left">
+                <h5 class="control-label">Account Number: </h5>
+                <h6>@Model.AccountNumber</h6>
+            </div>
+            <div class="form-group mt-2 text-left">
+                <h5 class="control-label">Amount: </h5>
+                <input id="amount" name="amount" class="form-control mt-2" value="@Model.Amount.ToString("0.00")"
+                       data-val="true" data-val-number="The field Amount must be a number."
+                       data-val-required="The Amount field is required." />
+                @Html.ValidationMessage("toAccountNumber", new { @class = "text-danger" })
+            </div>
+            <div class="form-group mt-2 text-left">
+                <h5 class="control-label ">Schedualed Date: </h5>
+                <input type="date" value="@schedualDate" name="SchedualDate" id="SchedualDate"
+                       min="@currentDate" class="form-control" data-val="true" data-val-required="The Schedualed Date is required." required />
+                @Html.ValidationMessage("SchedualDate", new { @class = "text-danger" })
+            </div>
+            <div class="form-group mt-2 text-left">
+                <h5 class="control-label ">Schedualed Time: </h5>
+                <input type="time" value="@schedualTime" name="SchedualTime" id="SchedualTime"
+                       min="@DateTime.UtcNow.ToLocalTime()" class="form-control" data-val="true" data-val-required="The Schedualed time is required." required />
+                @Html.ValidationMessage("SchedualTime", new { @class = "text-danger" })
+            </div>
+            <div class="form-group mt-2 text-left">
+                <h5 class="control-label">Period: </h5>
+                <select class="form-control form-control-sm" name="period" required>
+                    <option value="@Model.Period">@Model.Period</option>
+                    @foreach (var period in periodList)
+                    {
+                        <option value="@period">@period</option>
+                    }
+                </select>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <input type="button" class="btn btn-outline-secondary btn-sm" data-dismiss="modal" value="Cancel">
+            <input type="submit" class="btn btn-outline-info btn-sm" value="Confirm">
+        </div>
+    }
+</form>

@@ -1,0 +1,97 @@
+﻿@model ManageSchedualBillPayViewModel
+@{
+    ViewData["Title"] = "ManageBillPay";
+}
+
+<h1 class="display-4">ManageBillPay</h1>
+
+@if (Model.BillPays.Any())
+{
+    <div class="mt-3">
+        <table class="table table-hover text-center">
+            <thead>
+                <tr>
+                    <th>BillPayID</th>
+                    <th>AccountNumber</th>
+                    <th>PayeeID</th>
+                    <th>Amount</th>
+                    <th>SchedualDate</th>
+                    <th>Period</th>
+                    <th>ModifyDate</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var bill in Model.BillPays)
+                {
+                    if (bill.BillPayStatus == Status.Locked)
+                    {
+                        <tr class="alert-warning">
+                            <td>@Html.DisplayFor(x => bill.BillPayID)</td>
+                            <td>@Html.DisplayFor(x => bill.AccountNumber)</td>
+                            <td>@Html.DisplayFor(x => bill.PayeeID)</td>
+                            <td>@Html.DisplayFor(x => bill.Amount)</td>
+                            <td>@bill.SchedualDate.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                            <td>@Html.DisplayFor(x => bill.Period)</td>
+                            <td>@bill.ModifyDate.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                            <td>
+                                @*Button Trigger Modal*@
+                                <button onclick="getEditModal(@bill.BillPayID)" class="btn btn-outline-info btn-sm"
+                                        data-toggle="modal" data-target="#editBillPay">
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(x => bill.BillPayID)</td>
+                            <td>@Html.DisplayFor(x => bill.AccountNumber)</td>
+                            <td>@Html.DisplayFor(x => bill.PayeeID)</td>
+                            <td>@Html.DisplayFor(x => bill.Amount)</td>
+                            <td>@bill.SchedualDate.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                            <td>@Html.DisplayFor(x => bill.Period)</td>
+                            <td>@bill.ModifyDate.ToLocalTime().ToString("dd/MM/yyyy hh:mm:ss tt")</td>
+                            <td>
+                                @*Button Trigger Modal*@
+                                <button onclick="getEditModal(@bill.BillPayID)" class="btn btn-outline-info btn-sm"
+                                        data-toggle="modal" data-target="#editBillPay">
+                                    Edit
+                                </button>
+                            </td>
+                        </tr>
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    @* edit bill payment modal *@
+    <div class="modal fade" id="editBillPay" data-backdrop="static" data-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+        <div class="modal-dialog col-md-4">
+            <div class="modal-content" id="editBillPayBody">
+
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <h4 class="mt-4">Looks like you don't have any Schedualed Bill Payment yet.</h4>
+    <h4><a asp-action="SchedualBillPay">Click Here</a> to schedual a new Bill Payment</h4>
+}
+
+
+@section Scripts {
+    <script>
+        // get bill id, pass into controller and return edit partial view, show modal
+        function getEditModal(id) {
+            console.log(id);
+            $.get("/Customer/EditBillPay", { id: id }, function (data) {
+                $("#editBillPayBody").html(data);
+                $('#editBillPay').modal("show");
+            })
+        }
+    </script>
+} 

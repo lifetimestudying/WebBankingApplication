@@ -1,0 +1,96 @@
+﻿@inject SignInManager<ApplicationUser> signInManager;
+@inject UserManager<ApplicationUser> userManager;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - s3743318_Xinchen_Wang_A2</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand font-weight-bold text-primary text-nowrap" asp-area="" asp-controller="Home" asp-action="Index">MCBA</a>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".navbar-collapse" aria-controls="navbarSupportedContent"
+                        aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse justify-content-between">
+                    <ul class="navbar-nav align-items-center justify-content-start">
+                    
+                        @if (signInManager.IsSignedIn(User))
+                        {
+                            <li class="nav-item col-md">
+                                <a class="nav-link" asp-area="" asp-controller="Customer" asp-action="ATM">
+                                    ATM
+                                </a>
+                            </li>
+                            <li class="nav-item col-md text-nowrap">
+                                <a class="nav-link" asp-area="" asp-controller="Customer" asp-action="Statement">
+                                    My Statement
+                                </a>
+                            </li>
+                            <li class="nav-item col-md text-nowrap">
+                                <a class="nav-link dropdown-toggle" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Bill Payment
+                                </a>
+                                <div class="nav-item dropdown-menu">
+                                    <a class="dropdown-item" asp-area="" asp-controller="Customer" asp-action="SchedualBillPay">
+                                        Schedual Bill Payment
+                                    </a>
+                                    <a class="dropdown-item" asp-area="" asp-controller="Customer" asp-action="ManageBillPay">
+                                        Manage Bill Payment
+                                    </a>
+                                </div>
+                            </li>
+                        }
+                        <li class="nav-item col-md">
+                            <a class="nav-link" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                        </li>
+                    </ul>
+                    <ul class="navbar-nav align-items-center justify-content-end">
+                        @if (signInManager.IsSignedIn(User))
+                        {     
+                            <li class="nav-item col-md">
+                                <span class="nav-link text-dark text-nowrap">
+                                    <a class="nav-link text-info" asp-controller="Customer" asp-action="Index">Welcome, @User.Identity.Name </a>
+                                </span>
+                            </li>
+                            <li class="nav-item col-md">
+                                <a class="nav-link text-dark" asp-controller="Login" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <li class="nav-item col-md justify-content-end">
+                                <a class="nav-link text-info" asp-controller="Login" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item col-md justify-content-end">
+                                <a class="nav-link text-info" asp-controller="User" asp-action="Register">Register</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main id="mainContent" role="main" class="pb-3">
+            @RenderBody()
+        </main>
+    </div>
+
+    <footer class="border-top footer text-muted">
+        <div class="container">
+            &copy; 2021 - s3743318_Xinchen_Wang_A2 - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

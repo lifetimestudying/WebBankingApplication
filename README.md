@@ -1,5 +1,6 @@
-Student #: s3743318
-Name: Xinchen Wang
+Name: Xinchen (Adam) Wang
+-------------------------------------------
+This project is for the purpose of review and learning
 
 Projects - MCBA Bank Web App,  Admin Web App, Admin Api
 
@@ -31,3 +32,5 @@ pass: youWill_n0tGuess-This!
 admin web app:
 id: admin
 pass: admin
+
+----------------------------------
